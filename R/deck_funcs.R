@@ -1,18 +1,26 @@
-# shuffle_deck <- function(deck_of_cards = deck, seed){
-#
-#   # Set seed for reproducibility
-#   if (!is.null(seed)) {
-#     set.seed(seed)
-#   }
-#
-#   # Shuffle deck
-#   shuffled_deck <- deck_of_cards[sample(nrow(deck_of_cards)), ]
-#
-#   # Return deck
-#   return(shuffled_deck)
-#
-# }
-
+#' Shuffle a Deck of Cards
+#'
+#' This function shuffles a given deck of cards. If the provided deck is a function,
+#' it generates values based on the anonymous function before shuffling.
+#' If not, it directly shuffles the provided deck.
+#'
+#' @param deck_of_cards A dataframe representing the deck of cards or a function
+#'    that generates values for the deck. Defaults to a predefined deck named `deck`.
+#' @param seed An optional seed for reproducibility.
+#'
+#' @return A shuffled dataframe of cards. The dataframe will have a class attribute
+#'         of "data.frame", "shuffled deck", and either "deck" or "anonymous deck"
+#'         depending on the input.
+#'
+#' @examples
+#' # Using a predefined deck
+#' shuffled <- shuffle_deck(seed = 123)
+#'
+#' # Using an anonymous function
+#' fun_deck <- function(x) { runif(52, 1, 52) }
+#' shuffled <- shuffle_deck(deck_of_cards = fun_deck, seed = 123)
+#'
+#' @export
 shuffle_deck <- function(deck_of_cards = deck, seed) {
 
   # Set seed for reproducibility
@@ -44,6 +52,30 @@ shuffle_deck <- function(deck_of_cards = deck, seed) {
   return(shuffled_deck)
 }
 
+#' Deal a Card from the Deck
+#'
+#' This function deals the top card from a given deck and updates the deck by
+#' removing the dealt card. If the deck is empty, the function will return an
+#' error indicating there are no more cards to deal.
+#'
+#' @param current_deck A dataframe representing the current deck of cards.
+#'
+#' @return A list containing two elements:
+#' \itemize{
+#'   \item \code{dealt_card}: A dataframe containing the dealt card.
+#'   \item \code{updated_deck}: A dataframe representing the updated deck after dealing.
+#' }
+#'
+#' @examples
+#' # Create a sample deck
+#' deck <- data.frame(card = c("A", "B", "C"), value = c(1, 2, 3))
+#'
+#' # Deal a card from the sample deck
+#' result <- deal_card(deck)
+#' dealt <- result$dealt_card
+#' remaining <- result$updated_deck
+#'
+#' @export
 deal_card <- function(current_deck) {
   if (nrow(current_deck) == 0) {
     stop("No more cards in the deck!")
@@ -54,3 +86,40 @@ deal_card <- function(current_deck) {
 
   return(list(dealt_card = card_to_deal, updated_deck = updated_deck))
 }
+
+# score_keeper <- function(player_values, comp_values, mode) {
+#   # Check for valid mode
+#   if (!mode %in% c('t', 'pt')) {
+#     stop("Invalid mode. Please use 't' or 'pt'.")
+#   }
+#
+#   # Calculate basic stats
+#   player_sum <- sum(player_values)
+#   player_mean <- mean(player_values)
+#
+#   comp_sum <- sum(comp_values)
+#   comp_mean <- mean(comp_values)
+#
+#   # Calculate effect size
+#   effect_size <- NULL
+#   if (mode == 't') {
+#     effect_size <- player_mean - comp_mean
+#   } else if (mode == 'pt') {
+#     if (length(player_values) != length(comp_values)) {
+#       stop("For paired t-test, player and comp values should have the same length.")
+#     }
+#     effect_size <- mean(player_values - comp_values)
+#   }
+#
+#   # Return results as a list
+#   result <- list(
+#     player_sum = player_sum,
+#     player_mean = player_mean,
+#     comp_sum = comp_sum,
+#     comp_mean = comp_mean,
+#     effect_size = effect_size
+#   )
+#
+#   return(result)
+# }
+#
