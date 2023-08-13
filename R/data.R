@@ -10,5 +10,5 @@
 #'   \item{card}{A card}
 #'   \item{value}{A card value ranging from 2.00 (2C) to 14.75 (AS)}
 #' }
-#' @source <Standard Deck of Playing Cards>
+#' @source Standard Deck of Playing Cards
 "deck"

@@ -11,7 +11,11 @@
 #' @param mode A character string indicating the type of test. Valid options are
 #'    "t" for independent t-test
 #' and "pt" for paired t-test. Default is "t".
-#' @param ... Additional arguments passed to the \code{npboottprm::nonparboot} function.
+#' @param conf.level A confidence level for \code{npboottprm::nonparboot},
+#'    \code{stats::t.test}. The confidence level is also used to set the alpha
+#'    level to alpha = 1 - conf.level
+#' @param ... Additional arguments passed to the \code{npboottprm::nonparboot}
+#'    function.
 #'
 #' @return A list containing:
 #' \itemize{
@@ -28,7 +32,7 @@
 #'                              mode = "t", seed = 150)
 #'
 #' @export
-analyze_game <- function(comp_vv, plyr_vv, mode = "t", ...) {
+analyze_game <- function(comp_vv, plyr_vv, mode = "t", conf.level = 0.95, ...) {
   # Validate mode
   if (!mode %in% c("t", "pt")) {
     stop("Invalid mode. Please use 't' or 'pt'.")
@@ -42,9 +46,10 @@ analyze_game <- function(comp_vv, plyr_vv, mode = "t", ...) {
     )
     # Get bootstrap results
     boot_results <- npboottprm::nonparboot(data = game_data, x = "x", grp = "grp",
-                                           test = mode, ...)
+                                           test = mode, conf.level = conf.level, ...)
     # Get classical t-test results
-    classical_results <- stats::t.test(x ~ grp, data = game_data)
+    classical_results <- stats::t.test(x ~ grp, data = game_data,
+                                       conf.level = conf.level)
   } else { # mode == "pt"
     if (length(comp_vv) != length(plyr_vv)) {
       stop("For paired t-test, player and comp values should have the same length.")
@@ -55,14 +60,15 @@ analyze_game <- function(comp_vv, plyr_vv, mode = "t", ...) {
     )
     # Get bootstrap results
     boot_results <- npboottprm::nonparboot(data = game_data, x = "x", y = "y",
-                                           test = mode, ...)
+                                           test = mode, conf.level = conf.level, ...)
     # Get classical t-test results
-    classical_results <- stats::t.test(game_data$x, game_data$y, paired = TRUE)
+    classical_results <- stats::t.test(game_data$x, game_data$y, paired = TRUE,
+                                       conf.level = conf.level)
   }
 
   # Determine winner
   winner <- NULL
-  if (boot_results$p.value < 0.05) {
+  if (boot_results$p.value <= 1 - conf.level) {
     if (boot_results$effect.size > 0) { # Assuming positive effect size means player wins
       winner <- "Player Wins"
     } else {

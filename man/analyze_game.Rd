@@ -4,7 +4,7 @@
 \alias{analyze_game}
 \title{Analyze Game Results and Determine Winner}
 \usage{
-analyze_game(comp_vv, plyr_vv, mode = "t", ...)
+analyze_game(comp_vv, plyr_vv, mode = "t", conf.level = 0.95, ...)
 }
 \arguments{
 \item{comp_vv}{A numeric vector storing the values of the cards dealt to the
@@ -17,7 +17,12 @@ player.}
 "t" for independent t-test
 and "pt" for paired t-test. Default is "t".}
 
-\item{...}{Additional arguments passed to the \code{npboottprm::nonparboot} function.}
+\item{conf.level}{A confidence level for \code{npboottprm::nonparboot},
+\code{stats::t.test}. The confidence level is also used to set the alpha
+level to alpha = 1 - conf.level}
+
+\item{...}{Additional arguments passed to the \code{npboottprm::nonparboot}
+function.}
 }
 \value{
 A list containing:
