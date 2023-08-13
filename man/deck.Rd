@@ -17,9 +17,7 @@ A data frame with 52 rows and 4 columns:
 }
 }
 \source{
-\if{html}{\out{
-<Standard Deck of Playing Cards>
-}}
+Standard Deck of Playing Cards
 }
 \usage{
 deck
