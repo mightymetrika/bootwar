@@ -12,7 +12,8 @@ RoxygenNote: 7.2.3
 URL: https://github.com/mightymetrika/bootwar
 BugReports: https://github.com/mightymetrika/bootwar/issues
 Imports: 
-    npboottprm
+    npboottprm,
+    shiny
 Depends: 
     R (>= 2.10)
 LazyData: true
