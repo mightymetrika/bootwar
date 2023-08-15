@@ -32,16 +32,16 @@ bootwar <- function(){
         shiny::h3("Statistics"),
         shiny::verbatimTextOutput("effect_stats"),
 
-        shiny::h3("Results"),
-        shiny::verbatimTextOutput("winner"),
-        shiny::tableOutput("test_stats"),
-        shiny::tableOutput("effect_size")
-        # Add histograms here in the future
+        shiny::uiOutput("resultsUI")
+
       )
     )
   )
 
   server <- function(input, output, session) {
+    # Switch out globals
+    x <- NULL
+
     # Game state
     game_state <- shiny::reactiveVal(list(deck = NULL, player_values = numeric(0), comp_values = numeric(0), current_round = 0))
 
@@ -75,9 +75,7 @@ bootwar <- function(){
       # Check if it's the last round
       if (game_state()$current_round == input$rounds) {
         # Analyze game
-        analysis <- analyze_game(game_state()$comp_values, game_state()$player_values,
-                                 mode = input$mode, conf.level = input$conf.level,
-                                 nboot = input$nboot, seed = input$seed)
+        analysis <- game_analysis()  # Use the eventReactive result
 
         # Update game state with the analysis
         current_game_state <- game_state()
@@ -87,6 +85,13 @@ bootwar <- function(){
         # Notify user
         shiny::showNotification("Game has ended! Check out the results below.", type = "message", duration = NULL)
       }
+    })
+
+    # 1. Use eventReactive to determine when game is complete
+    game_analysis <- shiny::eventReactive(game_state()$current_round == input$rounds, {
+      analyze_game(game_state()$comp_values, game_state()$player_values,
+                   mode = input$mode, conf.level = input$conf.level,
+                   nboot = input$nboot, seed = input$seed)
     })
 
     # Update UI based on game state
@@ -161,6 +166,51 @@ bootwar <- function(){
       df_res_effect
     }, row.names = FALSE)
 
+    # Test Statistic Histogram
+    output$hist_stat <- shiny::renderPlot({
+      shiny::req(game_state()$analysis$bootstrap_results)
+
+      # Bootstrap results
+      boot_res <- game_state()$analysis$bootstrap_results
+
+      ggplot2::ggplot(data.frame(x = boot_res$bootstrap.stat.dist), ggplot2::aes(x)) +
+        ggplot2::geom_histogram(color = "black", fill = "white", bins = input$bins_stat) +
+        ggplot2::geom_vline(xintercept = c(boot_res$ci.stat), color = "red", linetype = "dashed") +
+        ggplot2::geom_vline(xintercept = boot_res$orig.stat, color = "blue") +
+        ggplot2::labs(x = "Bootstrap Distribution", y = "Frequency")
+    })
+
+    # Effect Size Histogram
+    output$hist_effect <- shiny::renderPlot({
+      shiny::req(game_state()$analysis$bootstrap_results)
+
+      # Bootstrap results
+      boot_res <- game_state()$analysis$bootstrap_results
+
+      ggplot2::ggplot(data.frame(x = boot_res$bootstrap.effect.dist), ggplot2::aes(x)) +
+        ggplot2::geom_histogram(color = "black", fill = "white", bins = input$bins_effect) +
+        ggplot2::geom_vline(xintercept = c(boot_res$ci.effect.size), color = "red", linetype = "dashed") +
+        ggplot2::geom_vline(xintercept = boot_res$effect.size, color = "blue") +
+        ggplot2::labs(x = "Bootstrap Distribution", y = "Frequency")
+    })
+
+    # 2. Conditional UI Rendering
+    output$resultsUI <- shiny::renderUI({
+      shiny::req(game_state()$current_round == input$rounds)
+
+      list(
+        shiny::h3("Results"),
+        shiny::verbatimTextOutput("winner"),
+        shiny::h3("Test Statistic"),
+        shiny::tableOutput("test_stats"),
+        shiny::plotOutput("hist_stat"),
+        shiny::sliderInput("bins_stat", "Number of bins for Test Statistic:", min = 10, max = 50, value = 30),
+        shiny::h3("Effect Size"),
+        shiny::tableOutput("effect_size"),
+        shiny::plotOutput("hist_effect"),
+        shiny::sliderInput("bins_effect", "Number of bins for Effect Size:", min = 10, max = 50, value = 30)
+      )
+    })
 
   }
 
