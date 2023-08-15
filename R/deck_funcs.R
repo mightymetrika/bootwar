@@ -23,6 +23,10 @@
 #' @export
 shuffle_deck <- function(deck_of_cards = deck, seed) {
 
+  # Switch out globals
+  if (is.function(deck_of_cards)) deck <- NULL
+
+
   # Set seed for reproducibility
   if (!is.null(seed)) {
     set.seed(seed)

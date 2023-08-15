@@ -34,25 +34,14 @@ bootwar <- function(){
 
         shiny::uiOutput("resultsUI")
 
-        # shiny::h3("Results"),
-        # shiny::verbatimTextOutput("winner"),
-        # shiny::tableOutput("test_stats"),
-        # shiny::tableOutput("effect_size"),
-        #
-        # # Add histograms here
-        # shiny::h3("Bootstrap Distribution of Test Statistic"),
-        # shiny::plotOutput("hist_stat"),
-        # shiny::sliderInput("bins_stat", "Number of bins for Test Statistic:", min = 10, max = 50, value = 30),
-        #
-        # shiny::h3("Bootstrap Distribution of Effect Size"),
-        # shiny::plotOutput("hist_effect"),
-        # shiny::sliderInput("bins_effect", "Number of bins for Effect Size:", min = 10, max = 50, value = 30)
-
       )
     )
   )
 
   server <- function(input, output, session) {
+    # Switch out globals
+    x <- NULL
+
     # Game state
     game_state <- shiny::reactiveVal(list(deck = NULL, player_values = numeric(0), comp_values = numeric(0), current_round = 0))
 
@@ -86,9 +75,6 @@ bootwar <- function(){
       # Check if it's the last round
       if (game_state()$current_round == input$rounds) {
         # Analyze game
-        # analysis <- analyze_game(game_state()$comp_values, game_state()$player_values,
-        #                          mode = input$mode, conf.level = input$conf.level,
-        #                          nboot = input$nboot, seed = input$seed)
         analysis <- game_analysis()  # Use the eventReactive result
 
         # Update game state with the analysis
@@ -191,8 +177,7 @@ bootwar <- function(){
         ggplot2::geom_histogram(color = "black", fill = "white", bins = input$bins_stat) +
         ggplot2::geom_vline(xintercept = c(boot_res$ci.stat), color = "red", linetype = "dashed") +
         ggplot2::geom_vline(xintercept = boot_res$orig.stat, color = "blue") +
-        ggplot2::labs(x = "Bootstrap Distribution", y = "Frequency",
-                      title = "Histogram of Bootstrap Test Statistic Distribution: Original (Observed) Statistic and Bootstrap Confidence Intervals Indicated")
+        ggplot2::labs(x = "Bootstrap Distribution", y = "Frequency")
     })
 
     # Effect Size Histogram
@@ -206,23 +191,22 @@ bootwar <- function(){
         ggplot2::geom_histogram(color = "black", fill = "white", bins = input$bins_effect) +
         ggplot2::geom_vline(xintercept = c(boot_res$ci.effect.size), color = "red", linetype = "dashed") +
         ggplot2::geom_vline(xintercept = boot_res$effect.size, color = "blue") +
-        ggplot2::labs(x = "Bootstrap Distribution", y = "Frequency",
-                      title = "Histogram of Bootstrap Effect Size Distribution: Original (Observed) Effect Size and Bootstrap Confidence Intervals Indicated")
+        ggplot2::labs(x = "Bootstrap Distribution", y = "Frequency")
     })
 
     # 2. Conditional UI Rendering
     output$resultsUI <- shiny::renderUI({
-      shiny::req(game_analysis())  # Only render if game_analysis is available
+      shiny::req(game_state()$current_round == input$rounds)
 
       list(
         shiny::h3("Results"),
         shiny::verbatimTextOutput("winner"),
+        shiny::h3("Test Statistic"),
         shiny::tableOutput("test_stats"),
-        shiny::tableOutput("effect_size"),
-        shiny::h3("Bootstrap Distribution of Test Statistic"),
         shiny::plotOutput("hist_stat"),
         shiny::sliderInput("bins_stat", "Number of bins for Test Statistic:", min = 10, max = 50, value = 30),
-        shiny::h3("Bootstrap Distribution of Effect Size"),
+        shiny::h3("Effect Size"),
+        shiny::tableOutput("effect_size"),
         shiny::plotOutput("hist_effect"),
         shiny::sliderInput("bins_effect", "Number of bins for Effect Size:", min = 10, max = 50, value = 30)
       )
