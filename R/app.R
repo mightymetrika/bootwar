@@ -8,6 +8,11 @@ bootwar <- function(){
       shiny::sidebarPanel(
         shiny::selectInput("mode", "Select Mode:", choices = c("t", "pt")),
         shiny::selectInput("deck", "Select Deck:", choices = c("Standard", "Anonymous")),
+        shiny::conditionalPanel(
+          condition = "input.deck === 'Anonymous'",
+          shiny::textInput("anon_func", "Enter Anonymous Function:", value = "function(x) { runif(52, 1, 52) }"),
+          shiny::actionButton("eval_anon_func", "Evaluate Anonymous Function")
+        ),
         shiny::numericInput("conf.level", "Confidence Level:", 0.95),
         shiny::numericInput("nboot", "Number of Bootstrap Resamples:", 1000),
         shiny::numericInput("seed", "Seed:", 123),
@@ -45,10 +50,47 @@ bootwar <- function(){
     # Game state
     game_state <- shiny::reactiveVal(list(deck = NULL, player_values = numeric(0), comp_values = numeric(0), current_round = 0))
 
+    shiny::observeEvent(input$eval_anon_func, {
+      # Try to evaluate the entered R code to get the anonymous function
+      tryCatch({
+        user_func <- eval(parse(text = input$anon_func))
+        if (is.function(user_func)) {
+          # Generate the custom deck
+          custom_deck <- shuffle_deck(deck_of_cards = user_func, seed = as.integer(input$seed))
+
+          # Update game state with this custom deck
+          current_state <- game_state()
+          current_state$deck <- custom_deck
+          game_state(current_state)
+
+          shiny::showNotification("Anonymous function evaluated successfully and deck created!", type = "message")
+        } else {
+          shiny::showNotification("Provided input is not a valid anonymous function.", type = "error")
+        }
+      }, error = function(e) {
+        shiny::showNotification(paste("Error:", e$message), type = "error")
+      })
+    })
+
+
     shiny::observeEvent(input$new_game, {
       # Shuffle the deck
-      new_deck <- shuffle_deck(seed = as.integer(input$seed))
-      game_state(list(deck = new_deck, player_values = numeric(0), comp_values = numeric(0), current_round = 0))
+      if (input$deck == "Anonymous" && !is.null(input$anon_func)) {
+        # If Anonymous is selected and there is a previously evaluated function,
+        # shuffle the deck using the anonymous function
+        user_func <- tryCatch(eval(parse(text = input$anon_func)), error = function(e) NULL)
+        if (is.function(user_func)) {
+          current_deck <- shuffle_deck(deck_of_cards = user_func, seed = as.integer(input$seed))
+        } else {
+          # Default to a standard deck if the function evaluation fails
+          current_deck <- shuffle_deck(seed = as.integer(input$seed))
+        }
+      } else {
+        # Shuffle the standard deck if Standard is selected
+        current_deck <- shuffle_deck(seed = as.integer(input$seed))
+      }
+
+      game_state(list(deck = current_deck, player_values = numeric(0), comp_values = numeric(0), current_round = 0))
     })
 
     shiny::observeEvent(input$deal_card, {
