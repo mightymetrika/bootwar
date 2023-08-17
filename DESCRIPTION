@@ -14,7 +14,9 @@ BugReports: https://github.com/mightymetrika/bootwar/issues
 Imports: 
     ggplot2,
     npboottprm,
-    shiny
+    shiny,
+    shinyjs,
+    shinythemes
 Depends: 
     R (>= 2.10)
 LazyData: true

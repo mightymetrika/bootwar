@@ -1,6 +1,35 @@
+#' Bootwar Shiny App
+#'
+#' Launches a Shiny application for the Bootwar card game.
+#' The app allows users to play a card game where they can analyze the game
+#' results using nonparametric bootstrap test with pooled resampling methods.
+#'
+#' @details
+#' The Bootwar card game is a bootstrap variation of the card game War. The
+#' Bootwar application has options to select different modes ('t' for
+#' independent t-test and 'pt' for paired t-test) and decks.
+#' Players can use a standard 52 card deck and they can also input a custom
+#' anonymous function to generate a deck. The app will let users deal cards,
+#' play the game, and then score and analyze results using nonparametric
+#' bootstrap test with pooled resampling methods. The game is designed to help
+#' users gain greater intuition on nonparametric bootstrap test with pooled
+#' resampling methods; as such, players are encouraged to experiment with
+#' different confidence levels, number of rounds, number of bootstrap resamples,
+#' and custom decks.
+#'
+#' @return
+#' A Shiny application object. Running this function will launch the Shiny app
+#' in the user's default web browser.
+#'
+#' @examples
+#' if(interactive()){
+#'   bootwar()
+#' }
 bootwar <- function(){
 
   ui <- shiny::fluidPage(
+    theme = shinythemes::shinytheme("united"),
+    shinyjs::useShinyjs(),  # Initialize shinyjs
     shiny::titlePanel("Bootwar Game"),
 
     # Settings Panel
@@ -15,10 +44,10 @@ bootwar <- function(){
         ),
         shiny::numericInput("conf.level", "Confidence Level:", 0.95),
         shiny::numericInput("nboot", "Number of Bootstrap Resamples:", 1000),
-        shiny::numericInput("seed", "Seed:", 123),
+        shiny::numericInput("seed", "Seed:", NA),
         shiny::sliderInput("rounds", "Number of Rounds:", min = 1, max = 26, value = 5),
         shiny::actionButton("new_game", "Start New Game"),
-        shiny::actionButton("deal_card", "Deal Card"),
+        shinyjs::disabled( shiny::actionButton("deal_card", "Deal Card")),
         shiny::verbatimTextOutput("round_counter"), # New round counter output
       ),
 
@@ -27,14 +56,16 @@ bootwar <- function(){
         shiny::h3("Player"),
         shiny::verbatimTextOutput("player_card"),
         shiny::verbatimTextOutput("player_value"),
-        shiny::verbatimTextOutput("player_stats"),
+        shiny::verbatimTextOutput("player_running_sum"),
+        shiny::verbatimTextOutput("player_running_mean"),
 
         shiny::h3("Computer"),
         shiny::verbatimTextOutput("comp_card"),
         shiny::verbatimTextOutput("comp_value"),
-        shiny::verbatimTextOutput("comp_stats"),
+        shiny::verbatimTextOutput("comp_running_sum"),
+        shiny::verbatimTextOutput("comp_running_mean"),
 
-        shiny::h3("Statistics"),
+        shiny::h3("Score Board"),
         shiny::verbatimTextOutput("effect_stats"),
 
         shiny::uiOutput("resultsUI")
@@ -51,12 +82,13 @@ bootwar <- function(){
     game_state <- shiny::reactiveVal(list(deck = NULL, player_values = numeric(0), comp_values = numeric(0), current_round = 0))
 
     shiny::observeEvent(input$eval_anon_func, {
+
       # Try to evaluate the entered R code to get the anonymous function
       tryCatch({
         user_func <- eval(parse(text = input$anon_func))
         if (is.function(user_func)) {
           # Generate the custom deck
-          custom_deck <- shuffle_deck(deck_of_cards = user_func, seed = as.integer(input$seed))
+          custom_deck <- shuffle_deck(deck_of_cards = user_func, seed = process_seed(input$seed))
 
           # Update game state with this custom deck
           current_state <- game_state()
@@ -74,23 +106,27 @@ bootwar <- function(){
 
 
     shiny::observeEvent(input$new_game, {
+
       # Shuffle the deck
       if (input$deck == "Anonymous" && !is.null(input$anon_func)) {
         # If Anonymous is selected and there is a previously evaluated function,
         # shuffle the deck using the anonymous function
         user_func <- tryCatch(eval(parse(text = input$anon_func)), error = function(e) NULL)
         if (is.function(user_func)) {
-          current_deck <- shuffle_deck(deck_of_cards = user_func, seed = as.integer(input$seed))
+          current_deck <- shuffle_deck(deck_of_cards = user_func, seed = process_seed(input$seed))
         } else {
           # Default to a standard deck if the function evaluation fails
-          current_deck <- shuffle_deck(seed = as.integer(input$seed))
+          current_deck <- shuffle_deck(seed = process_seed(input$seed))
         }
       } else {
         # Shuffle the standard deck if Standard is selected
-        current_deck <- shuffle_deck(seed = as.integer(input$seed))
+        current_deck <- shuffle_deck(seed = process_seed(input$seed))
       }
 
       game_state(list(deck = current_deck, player_values = numeric(0), comp_values = numeric(0), current_round = 0))
+
+      # Enable the "Deal Card" button when a new game starts
+      shinyjs::enable("deal_card")
     })
 
     shiny::observeEvent(input$deal_card, {
@@ -126,14 +162,18 @@ bootwar <- function(){
 
         # Notify user
         shiny::showNotification("Game has ended! Check out the results below.", type = "message", duration = NULL)
+
+        # Disable the "Deal Card" button when the game ends
+        shinyjs::disable("deal_card")
       }
     })
 
     # 1. Use eventReactive to determine when game is complete
     game_analysis <- shiny::eventReactive(game_state()$current_round == input$rounds, {
+
       analyze_game(game_state()$comp_values, game_state()$player_values,
                    mode = input$mode, conf.level = input$conf.level,
-                   nboot = input$nboot, seed = input$seed)
+                   nboot = input$nboot, seed = process_seed(input$seed))
     })
 
     # Update UI based on game state
@@ -148,17 +188,26 @@ bootwar <- function(){
     output$player_value <- shiny::renderText(paste0("Card Value: ", { utils::tail(game_state()$player_values, 1) }))
     output$comp_value <- shiny::renderText(paste0("Card Value: ", { utils::tail(game_state()$comp_values, 1) }))
 
-    output$player_stats <- shiny::renderText({
+    output$player_running_sum <- shiny::renderText({
       scores <- game_state()$player_scores
-      paste0("Running Sum: ", scores$player_sum,
-             ", Running Mean: ", scores$player_mean)
+      paste0("Running Sum: ", scores$player_sum)
     })
 
-    output$comp_stats <- shiny::renderText({
+    output$player_running_mean <- shiny::renderText({
       scores <- game_state()$player_scores
-      paste0("Running Sum: ", scores$comp_sum,
-             ", Running Mean: ", scores$comp_mean)
+      paste0("Running Mean: ", scores$player_mean)
     })
+
+    output$comp_running_sum <- shiny::renderText({
+      scores <- game_state()$player_scores
+      paste0("Running Sum: ", scores$comp_sum)
+    })
+
+    output$comp_running_mean <- shiny::renderText({
+      scores <- game_state()$player_scores
+      paste0("Running Mean: ", scores$comp_mean)
+    })
+
 
     output$effect_stats <- shiny::renderText({
       scores <- game_state()$player_scores
