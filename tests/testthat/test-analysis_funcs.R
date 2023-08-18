@@ -13,13 +13,13 @@ test_that("analyze_game works as expected", {
   rres <- play_round(cdeck = ideck, comp_cv = comp_cv, comp_vv = comp_vv,
                      plyr_cv = plyr_cv, plyr_vv = plyr_vv)
   rres <- play_round(cdeck = rres$updated_deck, comp_cv = rres$comp_cv, comp_vv = rres$comp_vv,
-                     plyr_cv = rres$ply_cv, plyr_vv = rres$plyr_vv)
+                     plyr_cv = rres$plyr_cv, plyr_vv = rres$plyr_vv)
   rres <- play_round(cdeck = rres$updated_deck, comp_cv = rres$comp_cv, comp_vv = rres$comp_vv,
-                     plyr_cv = rres$ply_cv, plyr_vv = rres$plyr_vv)
+                     plyr_cv = rres$plyr_cv, plyr_vv = rres$plyr_vv)
   rres <- play_round(cdeck = rres$updated_deck, comp_cv = rres$comp_cv, comp_vv = rres$comp_vv,
-                     plyr_cv = rres$ply_cv, plyr_vv = rres$plyr_vv)
+                     plyr_cv = rres$plyr_cv, plyr_vv = rres$plyr_vv)
   rres <- play_round(cdeck = rres$updated_deck, comp_cv = rres$comp_cv, comp_vv = rres$comp_vv,
-                     plyr_cv = rres$ply_cv, plyr_vv = rres$plyr_vv)
+                     plyr_cv = rres$plyr_cv, plyr_vv = rres$plyr_vv)
 
   # Analyze Game Results for independent t-test
   gres <- analyze_game(comp_vv = rres$comp_vv, plyr_vv = rres$plyr_vv, mode = "t",

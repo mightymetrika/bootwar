@@ -195,7 +195,8 @@ bootwar <- function(){
 
     output$player_running_mean <- shiny::renderText({
       scores <- game_state()$player_scores
-      paste0("Running Mean: ", scores$player_mean)
+      formatted_mean <- formatC(scores$player_mean, format = "f", digits = 2)
+      paste0("Running Mean: ", formatted_mean)
     })
 
     output$comp_running_sum <- shiny::renderText({
@@ -205,13 +206,14 @@ bootwar <- function(){
 
     output$comp_running_mean <- shiny::renderText({
       scores <- game_state()$player_scores
-      paste0("Running Mean: ", scores$comp_mean)
+      formatted_mean <- formatC(scores$comp_mean, format = "f", digits = 2)
+      paste0("Running Mean: ", formatted_mean)
     })
-
 
     output$effect_stats <- shiny::renderText({
       scores <- game_state()$player_scores
-      paste0("Running Effect Size: ", scores$effect_size)
+      formatted_effect_size <- formatC(scores$effect_size, format = "f", digits = 2)
+      paste0("Running Effect Size: ", formatted_effect_size)
     })
 
     # Update UI with results from analyze_game (assuming it's stored in the game_state)
@@ -237,7 +239,7 @@ bootwar <- function(){
       )
 
       names(df_res_stat) <- c("Test Statistic", "Bootstrap CI (Lower)", "Bootstrap CI (Upper)",
-                              "Bootstrap P-value", "Classical P-value")
+                              "Bootstrap P-value", "Welch P-value")
       df_res_stat
     }, row.names = FALSE)
 
