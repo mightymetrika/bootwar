@@ -27,7 +27,7 @@ If not, it directly shuffles the provided deck.
 shuffled <- shuffle_deck(seed = 123)
 
 # Using an anonymous function
-fun_deck <- function(x) { runif(52, 1, 52) }
+fun_deck <- function(x) { stats::runif(52, 1, 52) }
 shuffled <- shuffle_deck(deck_of_cards = fun_deck, seed = 123)
 
 }

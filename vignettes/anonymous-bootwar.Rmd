@@ -1,0 +1,88 @@
+---
+title: "anonymous-bootwar"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{anonymous-bootwar}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+This vignette shows how to play bootwar using a deck built with an anonymous function rather than the standard 52 card deck.
+
+### Initialization:
+
+```{r}
+# Load bootwar
+library(bootwar)
+
+# Set up vectors for computer and player's cards and values
+comp_cv <- vector(mode = "character")
+comp_vv <- vector(mode = "numeric")
+plyr_cv <- vector(mode = "character")
+plyr_vv <- vector(mode = "numeric")
+```
+
+
+### Define Custom Deck
+
+Use the deck_of_cards parameter of shuffle_deck() to define a custom deck of cards.
+
+```{r}
+seed <- 123
+set.seed(seed)
+
+# Shuffle the deck
+ideck <- shuffle_deck(
+  deck_of_cards = function(x) {as.integer(stats::runif(52, 1, 208))},
+  seed = seed
+  )
+
+head(ideck)
+```
+
+
+The rest of the workflow follows the same structure as the README.
+
+### Play the First Round:
+
+```{r}
+rres <- play_round(cdeck = ideck,
+                   comp_cv = comp_cv, comp_vv = comp_vv,
+                   plyr_cv = plyr_cv, plyr_vv = plyr_vv)
+```
+
+
+### Continue the Game for Four More Rounds:
+
+```{r}
+for (i in 1:4) {
+  rres <- play_round(cdeck = rres$updated_deck,
+                     comp_cv = rres$comp_cv, comp_vv = rres$comp_vv,
+                     plyr_cv = rres$plyr_cv, plyr_vv = rres$plyr_vv)
+}
+
+# Ensure 10 cards have been dealt
+nrow(rres$updated_deck)
+```
+
+
+### Analyze the Game:
+
+```{r}
+gres <- analyze_game(comp_vv = rres$comp_vv, plyr_vv = rres$plyr_vv,
+                     mode = "pt", nboot = 1000, seed = 150, conf.level = 0.05)
+
+# Display game results
+gres$winner
+gres$bootstrap_results$effect.size
+gres$bootstrap_results$ci.effect.size
+gres$bootstrap_results$p.value
+```
