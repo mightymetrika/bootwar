@@ -1,36 +1,35 @@
 Package: bootwar
-Title: A Nonparametric Bootstrap Test with Pooled Resampling Card Game
+Title: Nonparametric Bootstrap Test with Pooled Resampling Card Game
 Version: 0.0.0.9000
 Authors@R: c(
     person("Mackson", "Ncube", , "macksonncube.stats@gmail.com", role = c("aut", "cre")),
     person("mightymetrika, LLC", role = c("cph", "fnd"))
   )
-Description: The card game War has straightforward rules but can be
-    time-consuming. On the other hand, nonparametric bootstrap test with
-    pooled resampling methods as presented in Dwivedi, Mallawaarachchi, and Alvarado (2017) <doi:10.1002/sim.7263>
-    is ideal for comparing paired or unpaired means for non-normal data in
-    sample size studies. The goal of 'bootwar' is to help users gain better
-    intuition for nonparametric bootstrap test with pooled resampling methods by
-    playing Boot War, a small sample size variant of the card game War. The
-    shuffle_cards() function allows users to play Boot War with a standard 52
-    card deck, a anonymous deck created using an anonymous function, or an
-    interleaved deck which allows the user to define a different deck for each
-    player. The package includes functions deal_card(), score_keeper(), and
-    play_round() to help control the flow and keep score of the game. After a
-    user specified number of rounds are complete, the analyze_game() function
-    can be used to obtain the results of the game. The analyze_game() function
-    uses the nonparboot() function from the 'npboottprm' package in order to
-    obtain the nonparametric bootstrap test with pooled resampling; moreover,
-    to help users compare with standard methods, analyze_game() also returns the
-    results from the 'stats' package's t.test() function. Further, 'bootwar'
-    incorporates an interactive 'shiny' web application, bootwar(), offering
-    a user-friendly way to play Boot War and further their intuition on
-    nonparametric bootstrap test with pooled resampling methods.
+Description: The card game War is simple in its rules but can be lengthy. In
+    another domain, the nonparametric bootstrap test with pooled resampling
+    (nbpr) methods, as outlined in Dwivedi, Mallawaarachchi, and Alvarado (2017) <doi:10.1002/sim.7263>,
+    is optimal for comparing paired or unpaired means in non-normal data,
+    especially for small sample size studies. However, many researchers are
+    unfamiliar with these methods. The 'bootwar' package bridges this gap by
+    enabling users to grasp the concepts of nbpr via Boot War, a variation of the
+    card game War designed for small samples. With the shuffle_cards() function,
+    players can engage in Boot War using a standard 52-card deck, a custom deck
+    created via an anonymous function, or interleaved custom decks where each
+    player has their distinct deck. The package further provides functions like
+    deal_card(), score_keeper(), and play_round() to streamline gameplay and
+    scoring. Once a predetermined number of rounds concludes, users can employ
+    the analyze_game() function to derive game results. This function leverages
+    the 'npboottprm' package's nonparboot() to report nbpr results and, for
+    comparative analysis, also reports results from the 'stats' package's t.test()
+    function. Additionally, 'bootwar' features an interactive 'shiny' web
+    application, bootwar(). This offers a user-centric interface to experience
+    Boot War, enhancing understanding of nbpr methods across various distributions,
+    sample sizes, number of bootstrap resamples, and confidence intervals.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-URL: https://github.com/mightymetrika/bootwar 
+URL: https://github.com/mightymetrika/bootwar
 BugReports: https://github.com/mightymetrika/bootwar/issues
 Imports: 
     ggplot2,
