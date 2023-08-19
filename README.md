@@ -115,7 +115,10 @@ For a more streamlined gameplay experience, the bootwar() function
 launches an interactive Shiny web application.
 
 Users can also customize the game using an anonymous function for deck
-definition, as showcased in the Anonymous Bootwar vignette.
+definition, as showcased in the anonymous-bootwar vignette. Users can
+also customize the game by using an anonymous function to define a
+different deck for each player, as showcased in the interleaved-bootwar
+vignette.
 
 ## References
 
