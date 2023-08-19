@@ -21,6 +21,16 @@ test_that("shuffled deck works with anonymous deck", {
   expect_equal(round(mean(shd1$value), 2), 8.51)
 })
 
+test_that("shuffled deck works with interleaved deck", {
+
+  # Decks equal with same seed
+  shd1 <- shuffle_deck(deck_of_cards = function(x) {list(stats::rnorm(26, 1, 2),
+                                                         stats::rnorm(26, 1.5, 1.5))},
+                       seed = 100)
+
+  expect_equal(round(mean(shd1$value), 2), 1.33)
+})
+
 test_that("deal works with a shuffled deck", {
 
   # Deal two cards from the same deck
