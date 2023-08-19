@@ -14,8 +14,8 @@ that generates values for the deck. Defaults to a predefined deck named \code{de
 }
 \value{
 A shuffled dataframe of cards. The dataframe will have a class attribute
-of "data.frame", "shuffled deck", and either "deck" or "anonymous deck"
-depending on the input.
+of "data.frame", "shuffled deck", and either "deck", "anonymous deck"
+or "interleaved deck" depending on the input.
 }
 \description{
 This function shuffles a given deck of cards. If the provided deck is a function,
@@ -29,5 +29,10 @@ shuffled <- shuffle_deck(seed = 123)
 # Using an anonymous function
 fun_deck <- function(x) { stats::runif(52, 1, 52) }
 shuffled <- shuffle_deck(deck_of_cards = fun_deck, seed = 123)
+
+# Using an anonymous function to create an interleaved deck
+shuffled <- shuffle_deck(deck_of_cards = function(x) {list(stats::rnorm(26, 1, 2),
+                                                           stats::rnorm(26, 1.5, 1.5))},
+                         seed = 100)
 
 }
