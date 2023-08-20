@@ -24,6 +24,15 @@ Inspired by the card game War, which has straightforward rules but can be time-c
 
 ## Installation
 
+## Installation
+
+You can install the released version of 'bootwar' from [CRAN](https://CRAN.R-project.org):
+
+```{r eval=FALSE}
+install.packages("bootwar")
+```
+
+
 Install the development version of bootwar from GitHub using [devtools](https://devtools.r-lib.org/):
 
 ```{r, eval=FALSE}

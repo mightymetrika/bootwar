@@ -25,6 +25,8 @@
 #' if(interactive()){
 #'   bootwar()
 #' }
+#'
+#' @export
 bootwar <- function(){
 
   ui <- shiny::fluidPage(

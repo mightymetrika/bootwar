@@ -19,6 +19,15 @@ as implemented in the
 
 ## Installation
 
+## Installation
+
+You can install the released version of ‘bootwar’ from
+[CRAN](https://CRAN.R-project.org):
+
+``` r
+install.packages("bootwar")
+```
+
 Install the development version of bootwar from GitHub using
 [devtools](https://devtools.r-lib.org/):
 
