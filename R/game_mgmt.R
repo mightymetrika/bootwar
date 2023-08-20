@@ -69,49 +69,50 @@ score_keeper <- function(player_values, comp_values, mode) {
 #' state of the game after the round.
 #'
 #' @param cdeck A dataframe representing the current deck of cards.
+#' @param plyr_cv A character vector storing the cards dealt to the player so far.
+#' @param plyr_vv A numeric vector storing the values of the cards dealt to the
+#'    player so far.
 #' @param comp_cv A character vector storing the cards dealt to the computer so
 #'    far.
 #' @param comp_vv A numeric vector storing the values of the cards dealt to the
 #'    computer so far.
-#' @param plyr_cv A character vector storing the cards dealt to the player so far.
-#' @param plyr_vv A numeric vector storing the values of the cards dealt to the
-#'    player so far.
 #'
 #' @return A list containing:
 #' \itemize{
 #'   \item \code{updated_deck}: A dataframe representing the updated deck of cards after the round.
-#'   \item \code{comp_cv}: Updated character vector of cards dealt to the computer.
-#'   \item \code{comp_vv}: Updated numeric vector of values of cards dealt to the computer.
 #'   \item \code{plyr_cv}: Updated character vector of cards dealt to the player.
 #'   \item \code{plyr_vv}: Updated numeric vector of values of cards dealt to the player.
+#'   \item \code{comp_cv}: Updated character vector of cards dealt to the computer.
+#'   \item \code{comp_vv}: Updated numeric vector of values of cards dealt to the computer.
 #' }
 #'
 #' @examples
 #' # Simulate a round of the game with a sample deck
 #' deck <- data.frame(card = c("A", "B", "C", "D"), value = c(1, 2, 3, 4))
-#' comp_cards <- character(0)
-#' comp_values <- numeric(0)
 #' plyr_cards <- character(0)
 #' plyr_values <- numeric(0)
-#' round_result <- play_round(deck, comp_cards, comp_values, plyr_cards, plyr_values)
+#' comp_cards <- character(0)
+#' comp_values <- numeric(0)
+#' round_result <- play_round(deck, plyr_cards, plyr_values, comp_cards, comp_values)
 #'
 #' @export
-play_round <- function(cdeck, comp_cv, comp_vv, plyr_cv, plyr_vv) {
-  # Deal card to comp
-  card_comp <- deal_card(cdeck)
-  comp_cv <- c(comp_cv, as.character(card_comp$dealt_card$card))
-  comp_vv <- c(comp_vv, card_comp$dealt_card$value)
-
-  # Update deck after comp's card is dealt
-  shd <- card_comp$updated_deck
+play_round <- function(cdeck, plyr_cv, plyr_vv, comp_cv, comp_vv) {
 
   # Deal card to player
-  card_plyr <- deal_card(shd)
+  card_plyr <- deal_card(cdeck)
   plyr_cv <- c(plyr_cv, as.character(card_plyr$dealt_card$card))
   plyr_vv <- c(plyr_vv, card_plyr$dealt_card$value)
 
+  # Update deck after comp's card is dealt
+  shd <- card_plyr$updated_deck
+
+  # Deal card to comp
+  card_comp <- deal_card(shd)
+  comp_cv <- c(comp_cv, as.character(card_comp$dealt_card$card))
+  comp_vv <- c(comp_vv, card_comp$dealt_card$value)
+
   # Return updated state
-  return(list(updated_deck = card_plyr$updated_deck,
-              comp_cv = comp_cv, comp_vv = comp_vv,
-              plyr_cv = plyr_cv, plyr_vv = plyr_vv))
+  return(list(updated_deck = card_comp$updated_deck,
+              plyr_cv = plyr_cv, plyr_vv = plyr_vv,
+              comp_cv = comp_cv, comp_vv = comp_vv))
 }
