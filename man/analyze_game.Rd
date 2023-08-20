@@ -4,14 +4,14 @@
 \alias{analyze_game}
 \title{Analyze Game Results and Determine Winner}
 \usage{
-analyze_game(comp_vv, plyr_vv, mode = "t", conf.level = 0.95, ...)
+analyze_game(plyr_vv, comp_vv, mode = "t", conf.level = 0.95, ...)
 }
 \arguments{
-\item{comp_vv}{A numeric vector storing the values of the cards dealt to the
-computer.}
-
 \item{plyr_vv}{A numeric vector storing the values of the cards dealt to the
 player.}
+
+\item{comp_vv}{A numeric vector storing the values of the cards dealt to the
+computer.}
 
 \item{mode}{A character string indicating the type of test. Valid options are
 "t" for independent t-test
@@ -39,9 +39,9 @@ the winner based on the bootstrap results and effect size.
 }
 \examples{
 # Analyze a sample game
-comp_values <- c(1, 2, 3, 4)
 plyr_values <- c(4, 3, 2, 1)
-game_results <- analyze_game(comp_values, plyr_values, nboot = 1000,
+comp_values <- c(1, 2, 3, 4)
+game_results <- analyze_game(plyr_values, comp_values, nboot = 1000,
                              mode = "t", seed = 150)
 
 }

@@ -69,8 +69,8 @@ head(ideck)
 
 ``` r
 rres <- play_round(cdeck = ideck,
-                   comp_cv = comp_cv, comp_vv = comp_vv,
-                   plyr_cv = plyr_cv, plyr_vv = plyr_vv)
+                   plyr_cv = plyr_cv, plyr_vv = plyr_vv,
+                   comp_cv = comp_cv, comp_vv = comp_vv)
 ```
 
 ### Continue the Game for Four More Rounds:
@@ -78,8 +78,8 @@ rres <- play_round(cdeck = ideck,
 ``` r
 for (i in 1:4) {
   rres <- play_round(cdeck = rres$updated_deck,
-                     comp_cv = rres$comp_cv, comp_vv = rres$comp_vv,
-                     plyr_cv = rres$plyr_cv, plyr_vv = rres$plyr_vv)
+                     plyr_cv = rres$plyr_cv, plyr_vv = rres$plyr_vv,
+                     comp_cv = rres$comp_cv, comp_vv = rres$comp_vv)
 }
 
 # Ensure 10 cards have been dealt
@@ -96,19 +96,19 @@ confidence interval (think of this as a level which controls the amount
 of draws).
 
 ``` r
-gres <- analyze_game(comp_vv = rres$comp_vv, plyr_vv = rres$plyr_vv,
+gres <- analyze_game(plyr_vv = rres$plyr_vv, comp_vv = rres$comp_vv,
                      mode = "pt", nboot = 1000, seed = 150, conf.level = 0.05)
 
 # Display game results
 gres$winner
-#> [1] "Player Wins"
+#> [1] "Computer Wins"
 gres$bootstrap_results$effect.size
-#> [1] 0.25
+#> [1] -0.25
 gres$bootstrap_results$ci.effect.size
 #> 47.5% 52.5% 
 #> -0.15  0.05
 gres$bootstrap_results$p.value
-#> [1] 0.869
+#> [1] 0.838
 ```
 
 For a more streamlined gameplay experience, the bootwar() function

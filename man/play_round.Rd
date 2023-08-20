@@ -4,30 +4,30 @@
 \alias{play_round}
 \title{Play a Round of the Card Game}
 \usage{
-play_round(cdeck, comp_cv, comp_vv, plyr_cv, plyr_vv)
+play_round(cdeck, plyr_cv, plyr_vv, comp_cv, comp_vv)
 }
 \arguments{
 \item{cdeck}{A dataframe representing the current deck of cards.}
+
+\item{plyr_cv}{A character vector storing the cards dealt to the player so far.}
+
+\item{plyr_vv}{A numeric vector storing the values of the cards dealt to the
+player so far.}
 
 \item{comp_cv}{A character vector storing the cards dealt to the computer so
 far.}
 
 \item{comp_vv}{A numeric vector storing the values of the cards dealt to the
 computer so far.}
-
-\item{plyr_cv}{A character vector storing the cards dealt to the player so far.}
-
-\item{plyr_vv}{A numeric vector storing the values of the cards dealt to the
-player so far.}
 }
 \value{
 A list containing:
 \itemize{
 \item \code{updated_deck}: A dataframe representing the updated deck of cards after the round.
-\item \code{comp_cv}: Updated character vector of cards dealt to the computer.
-\item \code{comp_vv}: Updated numeric vector of values of cards dealt to the computer.
 \item \code{plyr_cv}: Updated character vector of cards dealt to the player.
 \item \code{plyr_vv}: Updated numeric vector of values of cards dealt to the player.
+\item \code{comp_cv}: Updated character vector of cards dealt to the computer.
+\item \code{comp_vv}: Updated numeric vector of values of cards dealt to the computer.
 }
 }
 \description{
@@ -38,10 +38,10 @@ state of the game after the round.
 \examples{
 # Simulate a round of the game with a sample deck
 deck <- data.frame(card = c("A", "B", "C", "D"), value = c(1, 2, 3, 4))
-comp_cards <- character(0)
-comp_values <- numeric(0)
 plyr_cards <- character(0)
 plyr_values <- numeric(0)
-round_result <- play_round(deck, comp_cards, comp_values, plyr_cards, plyr_values)
+comp_cards <- character(0)
+comp_values <- numeric(0)
+round_result <- play_round(deck, plyr_cards, plyr_values, comp_cards, comp_values)
 
 }

@@ -31,6 +31,12 @@ test_that("shuffled deck works with interleaved deck", {
   expect_equal(round(mean(shd1$value), 2), 1.33)
 })
 
+test_that("shuffled deck throws error with interleaved deck with unequal size", {
+  expect_error(shuffle_deck(deck_of_cards = function(x) {list(stats::rnorm(26, 1, 2),
+                                                              stats::rnorm(25, 1.5, 1.5))},
+                            seed = 100))
+})
+
 test_that("deal works with a shuffled deck", {
 
   # Deal two cards from the same deck

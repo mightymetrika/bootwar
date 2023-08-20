@@ -135,8 +135,8 @@ bootwar <- function(){
 
       # Play the round
       round_result <- play_round(cdeck = current_state$deck,
-                                 comp_cv = character(0), comp_vv = current_state$comp_values,
-                                 plyr_cv = character(0), plyr_vv = current_state$player_values)
+                                 plyr_cv = character(0), plyr_vv = current_state$player_values,
+                                 comp_cv = character(0), comp_vv = current_state$comp_values)
 
       # Calculate scores
       scores <- score_keeper(round_result$plyr_vv, round_result$comp_vv, mode = input$mode)
@@ -171,7 +171,7 @@ bootwar <- function(){
     # 1. Use eventReactive to determine when game is complete
     game_analysis <- shiny::eventReactive(game_state()$current_round == input$rounds, {
 
-      analyze_game(game_state()$comp_values, game_state()$player_values,
+      analyze_game(game_state()$player_values, game_state()$comp_values,
                    mode = input$mode, conf.level = input$conf.level,
                    nboot = input$nboot, seed = process_seed(input$seed))
     })

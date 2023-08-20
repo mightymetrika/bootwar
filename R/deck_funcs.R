@@ -34,7 +34,7 @@ shuffle_deck <- function(deck_of_cards = deck, seed) {
   # Set seed for reproducibility
   if (!is.null(seed)) {
     set.seed(seed)
-    }
+  }
 
   # Check if deck_of_cards is a function
   if (is.function(deck_of_cards)) {
@@ -43,9 +43,19 @@ shuffle_deck <- function(deck_of_cards = deck, seed) {
 
     # If the result is a list with two elements, treat them as separate decks
     if (is.list(decks) && length(decks) == 2) {
+
+      # Check if the two decks are of the same length
+      if (length(decks[[1]]) != length(decks[[2]])) {
+        stop("Both decks must be of the same length for interleaving!")
+      }
+
       # Create separate decks for player and computer
       A_deck <- data.frame(card = paste("A", 1:length(decks[[1]]), sep = "_"), value = decks[[1]])
       B_deck <- data.frame(card = paste("B", 1:length(decks[[2]]), sep = "_"), value = decks[[2]])
+
+      # Shuffle each deck
+      A_deck <- A_deck[sample(nrow(A_deck)), ]
+      B_deck <- B_deck[sample(nrow(B_deck)), ]
 
       # Interleave the decks
       interleaved_deck <- rbind(A_deck, B_deck)[order(rep(1:nrow(A_deck), 2)), ]
@@ -53,24 +63,25 @@ shuffle_deck <- function(deck_of_cards = deck, seed) {
       class(interleaved_deck) <- c("data.frame", "shuffled deck", "interleaved deck")
       return(interleaved_deck)
 
-      } else {
-        # If it's just one deck, treat it as before
-        values <- decks
-        ordered_indices <- order(values, decreasing = FALSE)
-        ordered_deck <- data.frame(card = 1:length(values), value = values[ordered_indices])
-
-        # Shuffle the ordered deck
-        shuffled_deck <- ordered_deck[sample(nrow(ordered_deck)), ]
-        class(shuffled_deck) <- c("data.frame", "shuffled deck", "anonymous deck")
-        return(shuffled_deck)
-        }
     } else {
-      # Shuffle the provided deck
-      shuffled_deck <- deck_of_cards[sample(nrow(deck_of_cards)), ]
-      class(shuffled_deck) <- c("data.frame", "shuffled deck", "deck")
+      # If it's just one deck, treat it as before
+      values <- decks
+      ordered_indices <- order(values, decreasing = FALSE)
+      ordered_deck <- data.frame(card = 1:length(values), value = values[ordered_indices])
+
+      # Shuffle the ordered deck
+      shuffled_deck <- ordered_deck[sample(nrow(ordered_deck)), ]
+      class(shuffled_deck) <- c("data.frame", "shuffled deck", "anonymous deck")
       return(shuffled_deck)
     }
+  } else {
+    # Shuffle the provided deck
+    shuffled_deck <- deck_of_cards[sample(nrow(deck_of_cards)), ]
+    class(shuffled_deck) <- c("data.frame", "shuffled deck", "deck")
+    return(shuffled_deck)
+  }
 }
+
 
 #' Deal a Card from the Deck
 #'
