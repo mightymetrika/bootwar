@@ -37,7 +37,7 @@ state of the game after the round.
 }
 \examples{
 # Simulate a round of the game with a sample deck
-deck <- data.frame(card = c("A", "B", "C", "D"), value = c(1, 2, 3, 4))
+deck <- mmcards::shuffle_deck()
 plyr_cards <- character(0)
 plyr_values <- numeric(0)
 comp_cards <- character(0)

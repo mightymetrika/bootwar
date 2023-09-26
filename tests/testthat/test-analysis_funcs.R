@@ -7,7 +7,7 @@ test_that("analyze_game works as expected", {
 
 
   # Return a shuffled_deck
-  ideck <- shuffle_deck(seed = 150)
+  ideck <- mmcards::shuffle_deck(seed = 150)
 
   # Play 5 Rounds
   rres <- play_round(cdeck = ideck, plyr_cv = plyr_cv, plyr_vv = plyr_vv,
@@ -53,7 +53,7 @@ test_that("analyze_game with 7 rounds", {
 
 
   # Return a shuffled_deck
-  ideck <- shuffle_deck(seed = 250)
+  ideck <- mmcards::shuffle_deck(seed = 250)
 
   # Play 5 Rounds
   rres <- play_round(cdeck = ideck, plyr_cv = plyr_cv, plyr_vv = plyr_vv,

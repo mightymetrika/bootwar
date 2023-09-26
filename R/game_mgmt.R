@@ -88,7 +88,7 @@ score_keeper <- function(player_values, comp_values, mode) {
 #'
 #' @examples
 #' # Simulate a round of the game with a sample deck
-#' deck <- data.frame(card = c("A", "B", "C", "D"), value = c(1, 2, 3, 4))
+#' deck <- mmcards::shuffle_deck()
 #' plyr_cards <- character(0)
 #' plyr_values <- numeric(0)
 #' comp_cards <- character(0)
@@ -99,7 +99,7 @@ score_keeper <- function(player_values, comp_values, mode) {
 play_round <- function(cdeck, plyr_cv, plyr_vv, comp_cv, comp_vv) {
 
   # Deal card to player
-  card_plyr <- deal_card(cdeck)
+  card_plyr <- mmcards::deal_card(cdeck)
   plyr_cv <- c(plyr_cv, as.character(card_plyr$dealt_card$card))
   plyr_vv <- c(plyr_vv, card_plyr$dealt_card$value)
 
@@ -107,7 +107,7 @@ play_round <- function(cdeck, plyr_cv, plyr_vv, comp_cv, comp_vv) {
   shd <- card_plyr$updated_deck
 
   # Deal card to comp
-  card_comp <- deal_card(shd)
+  card_comp <- mmcards::deal_card(shd)
   comp_cv <- c(comp_cv, as.character(card_comp$dealt_card$card))
   comp_vv <- c(comp_vv, card_comp$dealt_card$value)
 
