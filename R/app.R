@@ -90,7 +90,7 @@ bootwar <- function(){
         user_func <- eval(parse(text = input$anon_func))
         if (is.function(user_func)) {
           # Generate the custom deck
-          custom_deck <- shuffle_deck(deck_of_cards = user_func, seed = process_seed(input$seed))
+          custom_deck <- mmcards::shuffle_deck(deck_of_cards = user_func, seed = process_seed(input$seed))
 
           # Update game state with this custom deck
           current_state <- game_state()
@@ -115,14 +115,14 @@ bootwar <- function(){
         # shuffle the deck using the anonymous function
         user_func <- tryCatch(eval(parse(text = input$anon_func)), error = function(e) NULL)
         if (is.function(user_func)) {
-          current_deck <- shuffle_deck(deck_of_cards = user_func, seed = process_seed(input$seed))
+          current_deck <- mmcards::shuffle_deck(deck_of_cards = user_func, seed = process_seed(input$seed))
         } else {
           # Default to a standard deck if the function evaluation fails
-          current_deck <- shuffle_deck(seed = process_seed(input$seed))
+          current_deck <- mmcards::shuffle_deck(seed = process_seed(input$seed))
         }
       } else {
         # Shuffle the standard deck if Standard is selected
-        current_deck <- shuffle_deck(seed = process_seed(input$seed))
+        current_deck <- mmcards::shuffle_deck(seed = process_seed(input$seed))
       }
 
       game_state(list(deck = current_deck, player_values = numeric(0), comp_values = numeric(0), current_round = 0))

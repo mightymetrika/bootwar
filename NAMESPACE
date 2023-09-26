@@ -2,7 +2,5 @@
 
 export(analyze_game)
 export(bootwar)
-export(deal_card)
 export(play_round)
 export(score_keeper)
-export(shuffle_deck)

@@ -42,7 +42,7 @@ seed <- 123
 set.seed(seed)
 
 # Shuffle the deck
-ideck <- shuffle_deck(
+ideck <- mmcards::shuffle_deck(
   deck_of_cards = function(x) {list(as.integer(stats::runif(26, 25, 50)),
                                     as.integer(stats::runif(26, 35, 55)))},
   seed = seed

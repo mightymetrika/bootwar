@@ -24,8 +24,6 @@ Inspired by the card game War, which has straightforward rules but can be time-c
 
 ## Installation
 
-## Installation
-
 You can install the released version of 'bootwar' from [CRAN](https://CRAN.R-project.org):
 
 ```{r eval=FALSE}
@@ -56,19 +54,16 @@ comp_vv <- vector(mode = "numeric")
 plyr_cv <- vector(mode = "character")
 plyr_vv <- vector(mode = "numeric")
 
-# View the built-in 52 card deck
-head(deck)
-
-# Shuffle the deck
-ideck <- shuffle_deck(deck_of_cards = deck, seed = 150)
-head(ideck)
+# Shuffle a 52 card standard deck from the 'mmcards' package
+sdeck <- mmcards::shuffle_deck(seed = 150)
+head(sdeck)
 ```
 
 
 ### Play the First Round:
 
 ```{r}
-rres <- play_round(cdeck = ideck,
+rres <- play_round(cdeck = sdeck,
                    plyr_cv = plyr_cv, plyr_vv = plyr_vv,
                    comp_cv = comp_cv, comp_vv = comp_vv)
 ```

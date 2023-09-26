@@ -8,17 +8,17 @@ test_that("score keeper works as expected", {
 
 
   # Return a shuffled_deck
-  shd <- shuffle_deck(seed = 150)
+  shd <- mmcards::shuffle_deck(seed = 150)
 
   #Round 1
 
   # Deal first card to comp
-  card <- deal_card(shd)
+  card <- mmcards::deal_card(shd)
   comp_cv <- c(comp_cv, card$dealt_card$card)
   comp_vv <- c(comp_vv, card$dealt_card$value)
 
   # Deal first card to plyr
-  card <- deal_card(card$updated_deck)
+  card <- mmcards::deal_card(card$updated_deck)
   plyr_cv <- c(plyr_cv, card$dealt_card$card)
   plyr_vv <- c(plyr_vv, card$dealt_card$value)
 
@@ -29,11 +29,11 @@ test_that("score keeper works as expected", {
 
   # Round 2
 
-  card <- deal_card(card$updated_deck)
+  card <- mmcards::deal_card(card$updated_deck)
   comp_cv <- c(comp_cv, card$dealt_card$card)
   comp_vv <- c(comp_vv, card$dealt_card$value)
 
-  card <- deal_card(card$updated_deck)
+  card <- mmcards::deal_card(card$updated_deck)
   plyr_cv <- c(plyr_cv, card$dealt_card$card)
   plyr_vv <- c(plyr_vv, card$dealt_card$value)
 
@@ -54,7 +54,7 @@ test_that("play round works as expected", {
 
 
   # Return a shuffled_deck
-  ideck <- shuffle_deck(seed = 150)
+  ideck <- mmcards::shuffle_deck(seed = 150)
 
   # Round 1
   rres <- play_round(cdeck = ideck, plyr_cv = plyr_cv, plyr_vv = plyr_vv,

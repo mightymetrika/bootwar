@@ -19,8 +19,6 @@ as implemented in the
 
 ## Installation
 
-## Installation
-
 You can install the released version of ‘bootwar’ from
 [CRAN](https://CRAN.R-project.org):
 
@@ -52,19 +50,9 @@ comp_vv <- vector(mode = "numeric")
 plyr_cv <- vector(mode = "character")
 plyr_vv <- vector(mode = "numeric")
 
-# View the built-in 52 card deck
-head(deck)
-#>    rank suit card value
-#> 1     2    C   2C  2.00
-#> 14    2    D   2D  2.25
-#> 27    2    H   2H  2.50
-#> 40    2    S   2S  2.75
-#> 2     3    C   3C  3.00
-#> 15    3    D   3D  3.25
-
-# Shuffle the deck
-ideck <- shuffle_deck(deck_of_cards = deck, seed = 150)
-head(ideck)
+# Shuffle a 52 card standard deck from the 'mmcards' package
+sdeck <- mmcards::shuffle_deck(seed = 150)
+head(sdeck)
 #>    rank suit card value
 #> 35   10    H  10H 10.50
 #> 25    K    D   KD 13.25
@@ -77,7 +65,7 @@ head(ideck)
 ### Play the First Round:
 
 ``` r
-rres <- play_round(cdeck = ideck,
+rres <- play_round(cdeck = sdeck,
                    plyr_cv = plyr_cv, plyr_vv = plyr_vv,
                    comp_cv = comp_cv, comp_vv = comp_vv)
 ```
