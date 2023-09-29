@@ -72,18 +72,22 @@ score_keeper <- function(player_values, comp_values, mode) {
 #' @param plyr_cv A character vector storing the cards dealt to the player so far.
 #' @param plyr_vv A numeric vector storing the values of the cards dealt to the
 #'    player so far.
+#' @param plyr_ic A character vector storing the image cards dealt to the player. Default is NULL.
 #' @param comp_cv A character vector storing the cards dealt to the computer so
 #'    far.
 #' @param comp_vv A numeric vector storing the values of the cards dealt to the
 #'    computer so far.
+#' @param comp_ic A character vector storing the image cards dealt to the computer. Default is NULL.
 #'
 #' @return A list containing:
 #' \itemize{
 #'   \item \code{updated_deck}: A dataframe representing the updated deck of cards after the round.
 #'   \item \code{plyr_cv}: Updated character vector of cards dealt to the player.
 #'   \item \code{plyr_vv}: Updated numeric vector of values of cards dealt to the player.
+#'   \item \code{plyr_ic}: Updated character vector of image cards dealt to the player.
 #'   \item \code{comp_cv}: Updated character vector of cards dealt to the computer.
 #'   \item \code{comp_vv}: Updated numeric vector of values of cards dealt to the computer.
+#'   \item \code{comp_ic}: Updated character vector of image cards dealt to the computer.
 #' }
 #'
 #' @examples
@@ -93,15 +97,22 @@ score_keeper <- function(player_values, comp_values, mode) {
 #' plyr_values <- numeric(0)
 #' comp_cards <- character(0)
 #' comp_values <- numeric(0)
-#' round_result <- play_round(deck, plyr_cards, plyr_values, comp_cards, comp_values)
+#' round_result <- play_round(deck, plyr_cv = plyr_cards, plyr_vv = plyr_values,
+#'                            comp_cv = comp_cards, comp_vv = comp_values)
 #'
 #' @export
-play_round <- function(cdeck, plyr_cv, plyr_vv, comp_cv, comp_vv) {
+play_round <- function(cdeck, plyr_cv, plyr_vv, plyr_ic = NULL, comp_cv, comp_vv, comp_ic = NULL) {
 
   # Deal card to player
   card_plyr <- mmcards::deal_card(cdeck)
   plyr_cv <- c(plyr_cv, as.character(card_plyr$dealt_card$card))
   plyr_vv <- c(plyr_vv, card_plyr$dealt_card$value)
+  if(inherits(card_plyr$updated_deck, "ImgDeck")){
+    plyr_ic <- c(plyr_ic, card_plyr$dealt_card$icard)
+  } else {
+    plyr_ic <- c(plyr_ic, NULL)
+  }
+
 
   # Update deck after comp's card is dealt
   shd <- card_plyr$updated_deck
@@ -110,9 +121,16 @@ play_round <- function(cdeck, plyr_cv, plyr_vv, comp_cv, comp_vv) {
   card_comp <- mmcards::deal_card(shd)
   comp_cv <- c(comp_cv, as.character(card_comp$dealt_card$card))
   comp_vv <- c(comp_vv, card_comp$dealt_card$value)
+  if (inherits(card_comp$updated_deck, "ImgDeck")){
+    comp_ic <- c(comp_ic, card_comp$dealt_card$icard)
+  } else {
+    comp_ic <- c(comp_ic, NULL)
+  }
+
 
   # Return updated state
   return(list(updated_deck = card_comp$updated_deck,
-              plyr_cv = plyr_cv, plyr_vv = plyr_vv,
-              comp_cv = comp_cv, comp_vv = comp_vv))
+              plyr_cv = plyr_cv, plyr_vv = plyr_vv, plyr_ic = plyr_ic,
+              comp_cv = comp_cv, comp_vv = comp_vv, comp_ic = comp_ic))
 }
+
