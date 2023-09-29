@@ -57,12 +57,14 @@ bootwar <- function(){
       shiny::mainPanel(
         shiny::h3("Player"),
         shiny::verbatimTextOutput("player_card"),
+        shiny::imageOutput("player_card_image", width = "120px"),
         shiny::verbatimTextOutput("player_value"),
         shiny::verbatimTextOutput("player_running_sum"),
         shiny::verbatimTextOutput("player_running_mean"),
 
         shiny::h3("Computer"),
         shiny::verbatimTextOutput("comp_card"),
+        shiny::imageOutput("comp_card_image", width = "120px"),
         shiny::verbatimTextOutput("comp_value"),
         shiny::verbatimTextOutput("comp_running_sum"),
         shiny::verbatimTextOutput("comp_running_mean"),
@@ -118,11 +120,45 @@ bootwar <- function(){
           current_deck <- mmcards::shuffle_deck(deck_of_cards = user_func, seed = process_seed(input$seed))
         } else {
           # Default to a standard deck if the function evaluation fails
-          current_deck <- mmcards::shuffle_deck(seed = process_seed(input$seed))
+          #current_deck <- mmcards::shuffle_deck(seed = process_seed(input$seed))
+          # Shuffle the standard deck if Standard is selected
+          current_deck <- mmcards::i_deck(deck = mmcards::shuffle_deck(seed = process_seed(input$seed)),
+                                          i_path = "inst",
+                                          i_names = c("2_of_clubs", "2_of_diamonds", "2_of_hearts", "2_of_spades",
+                                                      "3_of_clubs", "3_of_diamonds", "3_of_hearts", "3_of_spades",
+                                                      "4_of_clubs", "4_of_diamonds", "4_of_hearts", "4_of_spades",
+                                                      "5_of_clubs", "5_of_diamonds", "5_of_hearts", "5_of_spades",
+                                                      "6_of_clubs", "6_of_diamonds", "6_of_hearts", "6_of_spades",
+                                                      "7_of_clubs", "7_of_diamonds", "7_of_hearts", "7_of_spades",
+                                                      "8_of_clubs", "8_of_diamonds", "8_of_hearts", "8_of_spades",
+                                                      "9_of_clubs", "9_of_diamonds", "9_of_hearts", "9_of_spades",
+                                                      "10_of_clubs", "10_of_diamonds", "10_of_hearts", "10_of_spades",
+                                                      "jack_of_clubs", "jack_of_diamonds", "jack_of_hearts", "jack_of_spades",
+                                                      "queen_of_clubs", "queen_of_diamonds", "queen_of_hearts", "queen_of_spades",
+                                                      "king_of_clubs", "king_of_diamonds", "king_of_hearts", "king_of_spades",
+                                                      "ace_of_clubs", "ace_of_diamonds", "ace_of_hearts", "ace_of_spades"
+                                          ))
+
         }
       } else {
         # Shuffle the standard deck if Standard is selected
-        current_deck <- mmcards::shuffle_deck(seed = process_seed(input$seed))
+        #current_deck <- mmcards::shuffle_deck(seed = process_seed(input$seed))
+        current_deck <- mmcards::i_deck(deck = mmcards::shuffle_deck(seed = process_seed(input$seed)),
+                                        i_path = "inst",
+                                        i_names = c("2_of_clubs", "2_of_diamonds", "2_of_hearts", "2_of_spades",
+                                                    "3_of_clubs", "3_of_diamonds", "3_of_hearts", "3_of_spades",
+                                                    "4_of_clubs", "4_of_diamonds", "4_of_hearts", "4_of_spades",
+                                                    "5_of_clubs", "5_of_diamonds", "5_of_hearts", "5_of_spades",
+                                                    "6_of_clubs", "6_of_diamonds", "6_of_hearts", "6_of_spades",
+                                                    "7_of_clubs", "7_of_diamonds", "7_of_hearts", "7_of_spades",
+                                                    "8_of_clubs", "8_of_diamonds", "8_of_hearts", "8_of_spades",
+                                                    "9_of_clubs", "9_of_diamonds", "9_of_hearts", "9_of_spades",
+                                                    "10_of_clubs", "10_of_diamonds", "10_of_hearts", "10_of_spades",
+                                                    "jack_of_clubs", "jack_of_diamonds", "jack_of_hearts", "jack_of_spades",
+                                                    "queen_of_clubs", "queen_of_diamonds", "queen_of_hearts", "queen_of_spades",
+                                                    "king_of_clubs", "king_of_diamonds", "king_of_hearts", "king_of_spades",
+                                                    "ace_of_clubs", "ace_of_diamonds", "ace_of_hearts", "ace_of_spades"
+                                        ))
       }
 
       game_state(list(deck = current_deck, player_values = numeric(0), comp_values = numeric(0), current_round = 0))
@@ -137,8 +173,8 @@ bootwar <- function(){
 
       # Play the round
       round_result <- play_round(cdeck = current_state$deck,
-                                 plyr_cv = character(0), plyr_vv = current_state$player_values,
-                                 comp_cv = character(0), comp_vv = current_state$comp_values)
+                                 plyr_cv = current_state$player_cards, plyr_vv = current_state$player_values, plyr_ic = current_state$player_icards,
+                                 comp_cv = current_state$comp_cards, comp_vv = current_state$comp_values, comp_ic = current_state$comp_icards)
 
       # Calculate scores
       scores <- score_keeper(round_result$plyr_vv, round_result$comp_vv, mode = input$mode)
@@ -147,8 +183,10 @@ bootwar <- function(){
       game_state(list(deck = round_result$updated_deck,
                       player_cards = round_result$plyr_cv,
                       player_values = round_result$plyr_vv,
+                      player_icards = round_result$plyr_ic,
                       comp_cards = round_result$comp_cv,
                       comp_values = round_result$comp_vv,
+                      comp_icards = round_result$comp_ic,
                       player_scores = scores,
                       current_round = current_state$current_round + 1))
 
@@ -189,6 +227,26 @@ bootwar <- function(){
     output$comp_card <- shiny::renderText(paste0("Card: ", { utils::tail(game_state()$comp_cards, 1) }))
     output$player_value <- shiny::renderText(paste0("Card Value: ", { utils::tail(game_state()$player_values, 1) }))
     output$comp_value <- shiny::renderText(paste0("Card Value: ", { utils::tail(game_state()$comp_values, 1) }))
+
+    # Render player card image
+    output$player_card_image <- shiny::renderImage({
+      # Ensure that there are cards in the player_icards list
+      shiny::req(length(game_state()$player_icards) > 0)
+
+      icard <- utils::tail(game_state()$player_icards, 1)
+
+      list(src = icard, contentType = "image/png", width=200, height="auto", alt = utils::tail(game_state()$player_cards, 1))
+    }, deleteFile = FALSE)
+
+    # Render computer card image
+    output$comp_card_image <- shiny::renderImage({
+      # Ensure that there are cards in the comp_icards list
+      shiny::req(length(game_state()$comp_icards) > 0)
+
+      icard <- utils::tail(game_state()$comp_icards, 1)
+
+      list(src = icard, contentType = "image/png", width=200, height="auto", alt = utils::tail(game_state()$comp_cards, 1))
+    }, deleteFile = FALSE)
 
     output$player_running_sum <- shiny::renderText({
       scores <- game_state()$player_scores

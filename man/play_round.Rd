@@ -4,7 +4,15 @@
 \alias{play_round}
 \title{Play a Round of the Card Game}
 \usage{
-play_round(cdeck, plyr_cv, plyr_vv, comp_cv, comp_vv)
+play_round(
+  cdeck,
+  plyr_cv,
+  plyr_vv,
+  plyr_ic = NULL,
+  comp_cv,
+  comp_vv,
+  comp_ic = NULL
+)
 }
 \arguments{
 \item{cdeck}{A dataframe representing the current deck of cards.}
@@ -14,11 +22,15 @@ play_round(cdeck, plyr_cv, plyr_vv, comp_cv, comp_vv)
 \item{plyr_vv}{A numeric vector storing the values of the cards dealt to the
 player so far.}
 
+\item{plyr_ic}{A character vector storing the image cards dealt to the player. Default is NULL.}
+
 \item{comp_cv}{A character vector storing the cards dealt to the computer so
 far.}
 
 \item{comp_vv}{A numeric vector storing the values of the cards dealt to the
 computer so far.}
+
+\item{comp_ic}{A character vector storing the image cards dealt to the computer. Default is NULL.}
 }
 \value{
 A list containing:
@@ -26,8 +38,10 @@ A list containing:
 \item \code{updated_deck}: A dataframe representing the updated deck of cards after the round.
 \item \code{plyr_cv}: Updated character vector of cards dealt to the player.
 \item \code{plyr_vv}: Updated numeric vector of values of cards dealt to the player.
+\item \code{plyr_ic}: Updated character vector of image cards dealt to the player.
 \item \code{comp_cv}: Updated character vector of cards dealt to the computer.
 \item \code{comp_vv}: Updated numeric vector of values of cards dealt to the computer.
+\item \code{comp_ic}: Updated character vector of image cards dealt to the computer.
 }
 }
 \description{
@@ -42,6 +56,7 @@ plyr_cards <- character(0)
 plyr_values <- numeric(0)
 comp_cards <- character(0)
 comp_values <- numeric(0)
-round_result <- play_round(deck, plyr_cards, plyr_values, comp_cards, comp_values)
+round_result <- play_round(deck, plyr_cv = plyr_cards, plyr_vv = plyr_values,
+                           comp_cv = comp_cards, comp_vv = comp_values)
 
 }
