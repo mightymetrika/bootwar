@@ -55,25 +55,43 @@ bootwar <- function(){
 
       # Gameplay and Results Area
       shiny::mainPanel(
-        shiny::h3("Player"),
-        shiny::verbatimTextOutput("player_card"),
-        shiny::imageOutput("player_card_image", width = "120px"),
-        shiny::verbatimTextOutput("player_value"),
-        shiny::verbatimTextOutput("player_running_sum"),
-        shiny::verbatimTextOutput("player_running_mean"),
+        shiny::fluidRow(
+          # Player Column
+          shiny::column(6,
+                        shiny::h3("Player"),
+                        shiny::conditionalPanel(
+                          condition = "input.deck === 'Anonymous'",
+                          shiny::verbatimTextOutput("player_card")
+                        ),
+                        shiny::conditionalPanel(
+                          condition = "input.deck === 'Standard'",
+                          shiny::imageOutput("player_card_image", width = "100px")
+                        ),
+                        shiny::verbatimTextOutput("player_value"),
+                        shiny::verbatimTextOutput("player_running_sum"),
+                        shiny::verbatimTextOutput("player_running_mean")
+          ),
 
-        shiny::h3("Computer"),
-        shiny::verbatimTextOutput("comp_card"),
-        shiny::imageOutput("comp_card_image", width = "120px"),
-        shiny::verbatimTextOutput("comp_value"),
-        shiny::verbatimTextOutput("comp_running_sum"),
-        shiny::verbatimTextOutput("comp_running_mean"),
+          # Computer Column
+          shiny::column(6,
+                        shiny::h3("Computer"),
+                        shiny::conditionalPanel(
+                          condition = "input.deck === 'Anonymous'",
+                          shiny::verbatimTextOutput("comp_card")
+                        ),
+                        shiny::conditionalPanel(
+                          condition = "input.deck === 'Standard'",
+                          shiny::imageOutput("comp_card_image", width = "100px")
+                        ),
+                        shiny::verbatimTextOutput("comp_value"),
+                        shiny::verbatimTextOutput("comp_running_sum"),
+                        shiny::verbatimTextOutput("comp_running_mean")
+          )
+        ),
 
         shiny::h3("Score Board"),
         shiny::verbatimTextOutput("effect_stats"),
-
         shiny::uiOutput("resultsUI")
-
       )
     )
   )
@@ -120,8 +138,6 @@ bootwar <- function(){
           current_deck <- mmcards::shuffle_deck(deck_of_cards = user_func, seed = process_seed(input$seed))
         } else {
           # Default to a standard deck if the function evaluation fails
-          #current_deck <- mmcards::shuffle_deck(seed = process_seed(input$seed))
-          # Shuffle the standard deck if Standard is selected
           current_deck <- mmcards::i_deck(deck = mmcards::shuffle_deck(seed = process_seed(input$seed)),
                                           i_path = "inst",
                                           i_names = c("2_of_clubs", "2_of_diamonds", "2_of_hearts", "2_of_spades",
@@ -142,7 +158,6 @@ bootwar <- function(){
         }
       } else {
         # Shuffle the standard deck if Standard is selected
-        #current_deck <- mmcards::shuffle_deck(seed = process_seed(input$seed))
         current_deck <- mmcards::i_deck(deck = mmcards::shuffle_deck(seed = process_seed(input$seed)),
                                         i_path = "inst",
                                         i_names = c("2_of_clubs", "2_of_diamonds", "2_of_hearts", "2_of_spades",
@@ -222,9 +237,14 @@ bootwar <- function(){
     output$round_counter <- shiny::renderText({
       paste("Current Round:", game_state()$current_round, "of", input$rounds)
     })
-
-    output$player_card <- shiny::renderText(paste0("Card: ", { utils::tail(game_state()$player_cards, 1) }))
-    output$comp_card <- shiny::renderText(paste0("Card: ", { utils::tail(game_state()$comp_cards, 1) }))
+    output$player_card <- shiny::renderText({
+      shiny::req(input$deck == "Anonymous")
+      paste0("Card: ", { utils::tail(game_state()$player_cards, 1) })
+    })
+    output$comp_card <- shiny::renderText({
+      shiny::req(input$deck == "Anonymous")
+      paste0("Card: ", { utils::tail(game_state()$comp_cards, 1) })
+    })
     output$player_value <- shiny::renderText(paste0("Card Value: ", { utils::tail(game_state()$player_values, 1) }))
     output$comp_value <- shiny::renderText(paste0("Card Value: ", { utils::tail(game_state()$comp_values, 1) }))
 

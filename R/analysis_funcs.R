@@ -44,6 +44,10 @@ analyze_game <- function(plyr_vv, comp_vv, mode = "t", conf.level = 0.95, ...) {
       x = c(plyr_vv, comp_vv),
       grp = c(rep("plyr", length(plyr_vv)), rep("comp", length(comp_vv)))
     )
+
+    # Reorder factor levels
+    game_data$grp <- factor(game_data$grp, levels = c("plyr", "comp"))
+
     # Get bootstrap results
     boot_results <- npboottprm::nonparboot(data = game_data, x = "x", grp = "grp",
                                            test = mode, conf.level = conf.level, ...)
