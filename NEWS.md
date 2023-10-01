@@ -1,4 +1,4 @@
-# bootwar (development version)
+# bootwar 0.2.0
 
 # bootwar 0.1.0
 
