@@ -141,7 +141,7 @@ bootwar <- function(){
         } else {
           # Default to a standard deck if the function evaluation fails
           current_deck <- mmcards::i_deck(deck = mmcards::shuffle_deck(seed = process_seed(input$seed)),
-                                          i_path = "inst",
+                                          i_path = "www",
                                           i_names = c("2_of_clubs", "2_of_diamonds", "2_of_hearts", "2_of_spades",
                                                       "3_of_clubs", "3_of_diamonds", "3_of_hearts", "3_of_spades",
                                                       "4_of_clubs", "4_of_diamonds", "4_of_hearts", "4_of_spades",
@@ -161,7 +161,7 @@ bootwar <- function(){
       } else {
         # Shuffle the standard deck if Standard is selected
         current_deck <- mmcards::i_deck(deck = mmcards::shuffle_deck(seed = process_seed(input$seed)),
-                                        i_path = "inst",
+                                        i_path = "www",
                                         i_names = c("2_of_clubs", "2_of_diamonds", "2_of_hearts", "2_of_spades",
                                                     "3_of_clubs", "3_of_diamonds", "3_of_hearts", "3_of_spades",
                                                     "4_of_clubs", "4_of_diamonds", "4_of_hearts", "4_of_spades",
@@ -257,7 +257,7 @@ bootwar <- function(){
 
       icard <- utils::tail(game_state()$player_icards, 1)
 
-      list(src = icard, contentType = "image/png", width=200, height="auto", alt = utils::tail(game_state()$player_cards, 1))
+      list(src = system.file(icard, package = "bootwar"), contentType = "image/png", width=200, height="auto", alt = utils::tail(game_state()$player_cards, 1))
     }, deleteFile = FALSE)
 
     # Render computer card image
@@ -267,7 +267,7 @@ bootwar <- function(){
 
       icard <- utils::tail(game_state()$comp_icards, 1)
 
-      list(src = icard, contentType = "image/png", width=200, height="auto", alt = utils::tail(game_state()$comp_cards, 1))
+      list(src = system.file(icard, package = "bootwar"), contentType = "image/png", width=200, height="auto", alt = utils::tail(game_state()$comp_cards, 1))
     }, deleteFile = FALSE)
 
     output$player_running_sum <- shiny::renderText({
