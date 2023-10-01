@@ -12,19 +12,16 @@ Description: The card game War is simple in its rules but can be lengthy. In
     especially for small sample size studies. However, many researchers are
     unfamiliar with these methods. The 'bootwar' package bridges this gap by
     enabling users to grasp the concepts of nbpr via Boot War, a variation of the
-    card game War designed for small samples. With the shuffle_cards() function,
-    players can engage in Boot War using a standard 52-card deck, a custom deck
-    created via an anonymous function, or interleaved custom decks where each
-    player has their distinct deck. The package further provides functions like
-    deal_card(), score_keeper(), and play_round() to streamline gameplay and
-    scoring. Once a predetermined number of rounds concludes, users can employ
-    the analyze_game() function to derive game results. This function leverages
-    the 'npboottprm' package's nonparboot() to report nbpr results and, for
-    comparative analysis, also reports results from the 'stats' package's t.test()
-    function. Additionally, 'bootwar' features an interactive 'shiny' web
-    application, bootwar(). This offers a user-centric interface to experience
-    Boot War, enhancing understanding of nbpr methods across various distributions,
-    sample sizes, number of bootstrap resamples, and confidence intervals.
+    card game War designed for small samples. The package provides functions like
+    score_keeper() and play_round() to streamline gameplay and scoring. Once a
+    predetermined number of rounds concludes, users can employ the analyze_game()
+    function to derive game results. This function leverages the 'npboottprm'
+    package's nonparboot() to report nbpr results and, for comparative analysis,
+    also reports results from the 'stats' package's t.test() function. Additionally,
+    'bootwar' features an interactive 'shiny' web application, bootwar(). This
+    offers a user-centric interface to experience Boot War, enhancing understanding
+    of nbpr methods across various distributions, sample sizes, number of bootstrap
+    resamples, and confidence intervals.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
