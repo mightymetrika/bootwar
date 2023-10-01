@@ -65,8 +65,9 @@ bootwar <- function(){
                         ),
                         shiny::conditionalPanel(
                           condition = "input.deck === 'Standard'",
-                          shiny::imageOutput("player_card_image", width = "100px")
+                          shiny::imageOutput("player_card_image", width = "100px", height="auto")
                         ),
+                        shiny::br(),  # Add a line break
                         shiny::verbatimTextOutput("player_value"),
                         shiny::verbatimTextOutput("player_running_sum"),
                         shiny::verbatimTextOutput("player_running_mean")
@@ -81,8 +82,9 @@ bootwar <- function(){
                         ),
                         shiny::conditionalPanel(
                           condition = "input.deck === 'Standard'",
-                          shiny::imageOutput("comp_card_image", width = "100px")
+                          shiny::imageOutput("comp_card_image", width = "100px", height="auto")
                         ),
+                        shiny::br(),  # Add a line break
                         shiny::verbatimTextOutput("comp_value"),
                         shiny::verbatimTextOutput("comp_running_sum"),
                         shiny::verbatimTextOutput("comp_running_mean")
@@ -152,7 +154,7 @@ bootwar <- function(){
                                                       "jack_of_clubs", "jack_of_diamonds", "jack_of_hearts", "jack_of_spades",
                                                       "queen_of_clubs", "queen_of_diamonds", "queen_of_hearts", "queen_of_spades",
                                                       "king_of_clubs", "king_of_diamonds", "king_of_hearts", "king_of_spades",
-                                                      "ace_of_clubs", "ace_of_diamonds", "ace_of_hearts", "ace_of_spades"
+                                                      "ace_of_clubs", "ace_of_diamonds", "ace_of_hearts", "ace_of_spades2"
                                           ))
 
         }
@@ -172,7 +174,7 @@ bootwar <- function(){
                                                     "jack_of_clubs", "jack_of_diamonds", "jack_of_hearts", "jack_of_spades",
                                                     "queen_of_clubs", "queen_of_diamonds", "queen_of_hearts", "queen_of_spades",
                                                     "king_of_clubs", "king_of_diamonds", "king_of_hearts", "king_of_spades",
-                                                    "ace_of_clubs", "ace_of_diamonds", "ace_of_hearts", "ace_of_spades"
+                                                    "ace_of_clubs", "ace_of_diamonds", "ace_of_hearts", "ace_of_spades2"
                                         ))
       }
 
